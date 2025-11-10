@@ -25,10 +25,8 @@ jobs:
     - name: Make Gradle executable
       run: chmod +x ./gradlew
 
-    - name: Build Debug APK with Build Scan
-      run: ./gradlew assembleDebug --scan
-      env:
-        GRADLE_SCAN_TOKEN: ${{ secrets.GRADLE_SCAN_TOKEN }}
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
 
     - name: Build Release APK
       run: ./gradlew assembleRelease
