@@ -17,7 +17,7 @@
         android:name="com.xperm.service.permission.XPERM"
         android:protectionLevel="signature"
         android:label="XPerm Permission"
-        android:description="Allows app to execute root commands via XPerm service" />
+        android:description="Allows app to execute root commands" />
     <uses-permission android:name="com.xperm.service.permission.XPERM" />
 
     <application
