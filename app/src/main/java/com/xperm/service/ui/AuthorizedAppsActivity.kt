@@ -26,14 +26,14 @@ class AuthorizedAppsActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authorized_apps)
+        setContentView(com.xperm.service.R.layout.activity_authorized_apps)
         
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         title = "授权应用管理"
         
         permissionManager = PermissionManager.getInstance(this)
         
-        recyclerView = findViewById(R.id.recycler_view)
+        recyclerView = findViewById(com.xperm.service.R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
         
         adapter = AuthorizedAppsAdapter()
@@ -84,14 +84,14 @@ class AuthorizedAppViewHolder(itemView: View) : BaseViewHolder<PackageInfo>(item
     
     companion object {
         val CREATOR = BaseViewHolder.Creator<PackageInfo> { inflater: LayoutInflater, parent: ViewGroup? ->
-            AuthorizedAppViewHolder(inflater.inflate(R.layout.item_authorized_app, parent, false))
+            AuthorizedAppViewHolder(inflater.inflate(com.xperm.service.R.layout.item_authorized_app, parent, false))
         }
     }
     
-    private val iconView: ImageView = itemView.findViewById(R.id.app_icon)
-    private val nameView: TextView = itemView.findViewById(R.id.app_name)
-    private val packageView: TextView = itemView.findViewById(R.id.app_package)
-    private val switch: SwitchMaterial = itemView.findViewById(R.id.app_switch)
+    private val iconView: ImageView = itemView.findViewById(com.xperm.service.R.id.app_icon)
+    private val nameView: TextView = itemView.findViewById(com.xperm.service.R.id.app_name)
+    private val packageView: TextView = itemView.findViewById(com.xperm.service.R.id.app_package)
+    private val switch: SwitchMaterial = itemView.findViewById(com.xperm.service.R.id.app_switch)
     
     override fun onBind() {
         val context = itemView.context

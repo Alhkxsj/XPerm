@@ -235,40 +235,31 @@ class MainActivity : AppCompatActivity() {
             .setItems(items) { _, which ->
                 when (which) {
                     0 -> showAuthorizedApps()
-                    1 -> manageRootPermissions()
-                    2 -> clearPermissionCache()
+                    1 -> {
+                        logMessage("打开 root 权限管理...")
+                        try {
+                            val intent = packageManager.getLaunchIntentForPackage("com.topjohnwu.magisk")
+                            if (intent != null) {
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this, "未找到 Magisk 应用", Toast.LENGTH_SHORT).show()
+                            }
+                        } catch (e: Exception) {
+                            logMessage("无法打开权限管理: ${e.message}")
+                        }
+                    }
+                    2 -> {
+                        getSharedPreferences("xperm_auth", MODE_PRIVATE)
+                            .edit()
+                            .clear()
+                            .apply()
+                        logMessage("权限缓存已清理")
+                        Toast.makeText(this, "权限缓存已清理", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             .setNegativeButton("取消", null)
             .show()
-    }
-    
-    private fun showAuthorizedApps() {
-        val intent = Intent(this, AuthorizedAppsActivity::class.java)
-        startActivity(intent)
-    }
-    
-    private fun manageRootPermissions() {
-        logMessage("打开 root 权限管理...")
-        try {
-            val intent = packageManager.getLaunchIntentForPackage("com.topjohnwu.magisk")
-            if (intent != null) {
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "未找到 Magisk 应用", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: Exception) {
-            logMessage("无法打开权限管理: ${e.message}")
-        }
-    }
-    
-    private fun clearPermissionCache() {
-        getSharedPreferences("xperm_auth", MODE_PRIVATE)
-            .edit()
-            .clear()
-            .apply()
-        logMessage("权限缓存已清理")
-        Toast.makeText(this, "权限缓存已清理", Toast.LENGTH_SHORT).show()
     }
     
     private fun showRootRequiredDialog() {
