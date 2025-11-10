@@ -93,30 +93,30 @@ class AuthorizedAppViewHolder(itemView: View) : BaseViewHolder<PackageInfo>(item
     private val packageView: TextView = itemView.findViewById(com.xperm.service.R.id.app_package)
     private val switch: SwitchMaterial = itemView.findViewById(com.xperm.service.R.id.app_switch)
     
-    override fun onBind() {
+    override fun onBind(item: PackageInfo) {
         val context = itemView.context
         
         // 设置应用图标
-        iconView.setImageDrawable(data.applicationInfo?.loadIcon(context.packageManager))
+        iconView.setImageDrawable(item.applicationInfo?.loadIcon(context.packageManager))
         
         // 设置应用名称
-        nameView.text = data.applicationInfo?.loadLabel(context.packageManager) ?: data.packageName
+        nameView.text = item.applicationInfo?.loadLabel(context.packageManager) ?: item.packageName
         
         // 设置包名
-        packageView.text = data.packageName
+        packageView.text = item.packageName
         
         // 设置开关状态
         val permissionManager = PermissionManager.getInstance(context)
-        switch.isChecked = permissionManager.isGranted(data.packageName, data.applicationInfo!!.uid)
+        switch.isChecked = permissionManager.isGranted(item.packageName, item.applicationInfo!!.uid)
         
         // 设置开关监听器
         switch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                permissionManager.grant(data.packageName, data.applicationInfo!!.uid)
-                Toast.makeText(context, "已授权 ${data.packageName}", Toast.LENGTH_SHORT).show()
+                permissionManager.grant(item.packageName, item.applicationInfo!!.uid)
+                Toast.makeText(context, "已授权 ${item.packageName}", Toast.LENGTH_SHORT).show()
             } else {
-                permissionManager.revoke(data.packageName, data.applicationInfo!!.uid)
-                Toast.makeText(context, "已撤销 ${data.packageName} 的授权", Toast.LENGTH_SHORT).show()
+                permissionManager.revoke(item.packageName, item.applicationInfo!!.uid)
+                Toast.makeText(context, "已撤销 ${item.packageName} 的授权", Toast.LENGTH_SHORT).show()
             }
         }
     }
