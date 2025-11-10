@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.xperm.service">
+
+    <!-- 权限声明 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    
+    <!-- XPerm服务权限 -->
+    <permission
+        android:name="com.xperm.service.permission.XPERM"
+        android:protectionLevel="signature"
+        android:label="XPerm权限"
+        android:description="允许应用通过XPerm服务执行root命令" />
+    <uses-permission android:name="com.xperm.service.permission.XPERM" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.XPerm"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        tools:targetApi="31">
+
+        <!-- 主活动 -->
+        <activity
+            android:name=".ui.HomeActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.XPerm">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <!-- 已授权应用管理活动 -->
+        <activity
+            android:name=".ui.AuthorizedAppsActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.HomeActivity"
+            android:theme="@style/Theme.XPerm" />
+        
+        <!-- 兼容性Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.XPerm" />
+
+        <!-- 已授权应用管理活动 -->
+        <activity
+            android:name=".AuthorizedAppsActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.XPerm" />
+
+        <!-- XPerm服务 -->
+        <service
+            android:name=".XPermService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="dataSync"
+            android:permission="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
+        <!-- Shizuku兼容Provider -->
+        <provider
+            android:name=".ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
+    </application>
+
+</manifest>
