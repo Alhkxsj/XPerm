@@ -40,14 +40,7 @@
             </intent-filter>
         </activity>
         
-        <!-- 已授权应用管理活动 -->
-        <activity
-            android:name=".ui.AuthorizedAppsActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.HomeActivity"
-            android:theme="@style/Theme.XPerm" />
-        
-        <!-- 兼容性Activity -->
+        <!-- 主活动 -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
@@ -55,9 +48,9 @@
 
         <!-- 已授权应用管理活动 -->
         <activity
-            android:name=".AuthorizedAppsActivity"
+            android:name=".ui.AuthorizedAppsActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ui.HomeActivity"
             android:theme="@style/Theme.XPerm" />
 
         <!-- XPerm服务 -->

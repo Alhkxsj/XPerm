@@ -53,15 +53,15 @@ class AuthorizedAppsActivity : AppCompatActivity() {
     }
 }
 
-class AuthorizedAppsAdapter : BaseRecyclerViewAdapter<ClassCreatorPool>() {
+class AuthorizedAppsAdapter : rikka.recyclerview.BaseRecyclerViewAdapter<rikka.recyclerview.ClassCreatorPool>() {
     
     init {
         getCreatorPool().putRule(PackageInfo::class.java, AuthorizedAppViewHolder.CREATOR)
         setHasStableIds(true)
     }
     
-    override fun onCreateCreatorPool(): ClassCreatorPool {
-        return ClassCreatorPool()
+    override fun onCreateCreatorPool(): rikka.recyclerview.ClassCreatorPool {
+        return rikka.recyclerview.ClassCreatorPool()
     }
     
     override fun getItemId(position: Int): Long {
@@ -80,10 +80,10 @@ class AuthorizedAppsAdapter : BaseRecyclerViewAdapter<ClassCreatorPool>() {
     }
 }
 
-class AuthorizedAppViewHolder(itemView: View) : BaseViewHolder<PackageInfo>(itemView) {
+class AuthorizedAppViewHolder(itemView: View) : rikka.recyclerview.BaseViewHolder<PackageInfo>(itemView) {
     
     companion object {
-        val CREATOR = BaseViewHolder.Creator<PackageInfo> { inflater: LayoutInflater, parent: ViewGroup? ->
+        val CREATOR = rikka.recyclerview.BaseViewHolder.Creator<PackageInfo> { inflater: LayoutInflater, parent: ViewGroup? ->
             AuthorizedAppViewHolder(inflater.inflate(com.xperm.service.R.layout.item_authorized_app, parent, false))
         }
     }
@@ -93,7 +93,8 @@ class AuthorizedAppViewHolder(itemView: View) : BaseViewHolder<PackageInfo>(item
     private val packageView: TextView = itemView.findViewById(com.xperm.service.R.id.app_package)
     private val switch: SwitchMaterial = itemView.findViewById(com.xperm.service.R.id.app_switch)
     
-    override fun onBind(item: PackageInfo) {
+    override fun onBind() {
+        val item = data
         val context = itemView.context
         
         // 设置应用图标

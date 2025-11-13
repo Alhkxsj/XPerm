@@ -80,9 +80,37 @@ class CommandExecutor {
                 }
             } else {
                 Log.w(TAG, "Executing command without client context verification")
+                return CommandResult(
+                    success = false,
+                    output = "",
+                    error = "Context and package name required for security",
+                    exitCode = -1
+                )
+            }
+            
+            // 安全性改进：验证命令
+            if (!isValidCommand(command)) {
+                Log.e(TAG, "Invalid command detected: $command")
+                return CommandResult(
+                    success = false,
+                    output = "",
+                    error = "Invalid command",
+                    exitCode = -1
+                )
             }
             
             return executeCommand("su -c $command")
+        }
+        
+        // 增加命令验证函数以防止命令注入
+        private fun isValidCommand(command: String): Boolean {
+            // 检查是否有潜在的危险字符或命令
+            val dangerousPatterns = listOf(
+                "|", "||", "&", "&&", ";", ">", ">>", "<", 
+                "$((", "$(", "`", "eval", "exec", "source", "."
+            )
+            
+            return !dangerousPatterns.any { command.contains(it, ignoreCase = true) }
         }
     }
 }

@@ -48,22 +48,17 @@ class ShizukuProvider : ContentProvider() {
         }
         
         try {
-            val binderContainer = extras.getParcelable("moe.shizuku.privileged.api.intent.extra.BINDER")
-            if (binderContainer is android.os.Parcelable) {
-                // 在XPerm中，我们使用自己的Binder
-                val xpermBinder = XPermService.getInstance()?.getServiceBinder()
-                if (xpermBinder != null) {
-                    binder = xpermBinder
-                    Log.d(TAG, "Binder sent successfully")
-                    
-                    val result = Bundle()
-                    result.putBoolean("result", true)
-                    return result
-                } else {
-                    Log.e(TAG, "XPerm service binder is null")
-                }
+            // 在XPerm中，我们使用自己的Binder
+            val xpermBinder = XPermService.getInstance()?.getServiceBinder()
+            if (xpermBinder != null) {
+                binder = xpermBinder
+                Log.d(TAG, "Binder sent successfully")
+                
+                val result = Bundle()
+                result.putBoolean("result", true)
+                return result
             } else {
-                Log.e(TAG, "Binder container is not a valid Parcelable")
+                Log.e(TAG, "XPerm service binder is null")
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error handling sendBinder", e)

@@ -4,7 +4,6 @@ plugins {
 }
 
 android {
-    namespace 'com.xperm.service'
     compileSdk 34
 
     defaultConfig {
@@ -12,40 +11,26 @@ android {
         minSdk 21
         targetSdk 34
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-        debug {
-            debuggable true
-            minifyEnabled false
-        }
     }
-    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    
     buildFeatures {
         viewBinding true
-    }
-    
-    packagingOptions {
-        resources {
-            excludes += ['/META-INF/{AL2.0,LGPL2.1}', 'META-INF/gradle/incremental.annotation.processors']
-        }
     }
 }
 
@@ -62,6 +47,10 @@ dependencies {
     
     // 添加Material Design组件库依赖
     implementation 'com.google.android.material:material:1.10.0'
+    
+    // 添加Rikka库依赖，用于RecyclerView扩展功能
+    implementation 'dev.rikka.rikkax.recyclerview:recyclerview-ktx:1.3.2'
+    implementation 'dev.rikka.rikkax.html:html-ktx:1.1.2'
     
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

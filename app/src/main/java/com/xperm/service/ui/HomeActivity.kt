@@ -2,7 +2,6 @@ package com.xperm.service.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
@@ -21,7 +20,7 @@ class HomeActivity : AppBarActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = com.xperm.service.databinding.ActivityHomeBinding.inflate(layoutInflater)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
         supportActionBar?.setDisplayHomeAsUpEnabled(false)

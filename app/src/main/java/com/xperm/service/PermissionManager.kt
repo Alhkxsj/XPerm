@@ -120,7 +120,7 @@ class PermissionManager private constructor(context: Context) {
     fun getAuthorizedApps(packageManager: PackageManager): List<PackageInfo> {
         return try {
             val apps = mutableListOf<PackageInfo>()
-            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS)
+            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
             
             for (pi in allPackages) {
                 // 检查应用是否声明了需要XPerm权限
@@ -144,7 +144,7 @@ class PermissionManager private constructor(context: Context) {
     fun getTemporaryAuthorizedApps(packageManager: PackageManager): List<PackageInfo> {
         return try {
             val apps = mutableListOf<PackageInfo>()
-            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_META_DATA or PackageManager.GET_PERMISSIONS)
+            val allPackages = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
             
             for (pi in allPackages) {
                 // 检查应用是否声明了需要XPerm权限
