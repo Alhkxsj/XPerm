@@ -9,4 +9,9 @@
     <string name="permission_management">权限管理</string>
     <string name="service_status">服务状态</string>
     <string name="system_log">系统日志</string>
+    <string name="service_running">服务运行中</string>
+    <string name="service_not_running">服务未运行</string>
+    <string name="version_info">API版本: %d, 补丁版本: %d</string>
+    <string name="service_available">系统服务可用</string>
+    <string name="service_not_available">系统服务不可用</string>
 </resources>

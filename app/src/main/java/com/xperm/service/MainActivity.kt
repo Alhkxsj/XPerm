@@ -16,6 +16,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.xperm.service.databinding.ActivityMainBinding
+import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuProvider
+import rikka.shizuku.Sui
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.Executors
@@ -35,6 +38,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         
+        // 初始化Shizuku API
+        initializeShizuku()
+        
         initializeUI()
         setupClickListeners()
         checkPermissions()
@@ -44,6 +50,45 @@ class MainActivity : AppCompatActivity() {
         logMessage("设备: ${Build.MANUFACTURER} ${Build.MODEL}")
         logMessage("Android: ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
     }
+    
+    private fun initializeShizuku() {
+        try {
+            // 初始化系统权限支持
+            val isSuiAvailable = Sui.init(this.packageName)
+            logMessage("系统权限初始化: ${if (isSuiAvailable) "成功" else "失败"}")
+            
+            // 注册权限请求结果监听器
+            Shizuku.addRequestPermissionResultListener(REQUEST_PERMISSION_RESULT_LISTENER)
+            
+            logMessage("系统权限API初始化完成")
+        } catch (e: Exception) {
+            logMessage("系统权限API初始化失败: ${e.message}")
+        }
+    }
+    
+    private fun checkShizukuPermission(requestCode: Int): Boolean {
+        if (Shizuku.isPreV11()) {
+            logMessage("权限版本过低，不支持")
+            return false
+        }
+        if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
+            logMessage("系统权限已授予")
+            return true
+        } else if (Shizuku.shouldShowRequestPermissionRationale()) {
+            logMessage("用户拒绝权限且不显示再次询问")
+            return false
+        } else {
+            logMessage("请求系统权限")
+            Shizuku.requestPermission(requestCode)
+            return false
+        }
+    }
+    
+    private val REQUEST_PERMISSION_RESULT_LISTENER = 
+        rikka.shizuku.Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+            val granted = grantResult == PackageManager.PERMISSION_GRANTED
+            logMessage("系统权限请求结果: $requestCode -> ${if (granted) "允许" else "拒绝"}")
+        }
     
     private fun initializeUI() {
         // 设置按钮状态

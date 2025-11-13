@@ -53,6 +53,13 @@ dependencies {
     implementation 'dev.rikka.rikkax.recyclerview:recyclerview-ktx:1.3.2'
     implementation 'dev.rikka.rikkax.html:html-ktx:1.1.2'
     
+    // 添加Shizuku API依赖
+    implementation 'dev.rikka.shizuku:api:12.1.0'
+    implementation 'dev.rikka.shizuku:provider:12.1.0'
+    
+    // 添加Shizuku隐藏API支持
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:6.1'
+    
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

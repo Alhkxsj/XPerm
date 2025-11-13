@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
 import android.util.Log
+import rikka.shizuku.Shizuku
+import rikka.shizuku.ShizukuProvider
 import java.io.*
 import java.net.ServerSocket
 import java.net.Socket
@@ -40,7 +42,21 @@ class XPermService : Service() {
         notificationManager = getSystemService(NotificationManager::class.java)
         permissionManager = PermissionManager.getInstance(this)
         createNotificationChannel()
+        
+        // 初始化Shizuku API
+        initializeShizuku()
+        
         Log.d(TAG, "XPermService created")
+    }
+    
+    private fun initializeShizuku() {
+        try {
+            // 启用多进程支持
+            ShizukuProvider.enableMultiProcessSupport()
+            Log.d(TAG, "系统权限多进程支持已启用")
+        } catch (e: Exception) {
+            Log.e(TAG, "系统权限初始化失败", e)
+        }
     }
     
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

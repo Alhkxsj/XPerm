@@ -13,6 +13,8 @@ import com.xperm.service.XPermService
 import com.xperm.service.databinding.ActivityHomeBinding
 import com.xperm.service.utils.AppBarActivity
 import rikka.recyclerview.fixEdgeEffect
+import rikka.shizuku.Shizuku
+import rikka.shizuku.Sui
 
 class HomeActivity : AppBarActivity() {
     private lateinit var binding: ActivityHomeBinding
@@ -26,8 +28,33 @@ class HomeActivity : AppBarActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         title = "XPerm"
         
+        // 初始化Shizuku API
+        initializeShizuku()
+        
         setupRecyclerView()
         updateServiceStatus()
+    }
+    
+    private fun initializeShizuku() {
+        try {
+            // 初始化系统权限支持
+            val isSuiAvailable = Sui.init(this.packageName)
+            println("系统权限初始化: ${if (isSuiAvailable) "成功" else "失败"}")
+            
+            // 注册服务生命状态监听器
+            val binderReceivedListener = rikka.shizuku.Shizuku.OnBinderReceivedListener {
+                println("系统服务Binder已接收")
+            }
+            Shizuku.addBinderReceivedListener(binderReceivedListener)
+            
+            val binderDeadListener = rikka.shizuku.Shizuku.OnBinderDeadListener {
+                println("系统服务Binder已断开")
+            }
+            Shizuku.addBinderDeadListener(binderDeadListener)
+            
+        } catch (e: Exception) {
+            println("系统权限API初始化失败: ${e.message}")
+        }
     }
     
     private fun setupRecyclerView() {
@@ -39,13 +66,19 @@ class HomeActivity : AppBarActivity() {
     
     private fun updateServiceStatus() {
         val isRunning = isServiceRunning(XPermService::class.java)
-        val status = ServiceStatus(
-            isRunning = isRunning,
-            uid = if (isRunning) ShizukuCompatAPI.getUid() else -1,
-            apiVersion = ShizukuCompatAPI.getVersion(),
-            patchVersion = ShizukuCompatAPI.getServerPatchVersion(),
-            permission = true // 默认有权限
-        )
+        val status = if (isRunning) {
+            ServiceStatus(
+                isRunning = true,
+                uid = ShizukuCompatAPI.getUid(),
+                apiVersion = ShizukuCompatAPI.getVersion(),
+                patchVersion = ShizukuCompatAPI.getServerPatchVersion(),
+                permission = ShizukuCompatAPI.checkSelfPermission() == PackageManager.PERMISSION_GRANTED,
+                serviceAvailable = ShizukuCompatAPI.pingBinder(),
+                serviceUid = ShizukuCompatAPI.getUid()
+            )
+        } else {
+            ServiceStatus.NOT_RUNNING
+        }
         
         adapter.updateStatus(status)
     }

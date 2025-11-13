@@ -4,86 +4,72 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.*
 import android.util.Log
-import com.xperm.service.utils.ShizukuCompatUtils
+import rikka.shizuku.IShizukuService
+import rikka.shizuku.Shizuku
 
 /**
- * Shizuku兼容Binder接口
- * 提供与Shizuku服务相似的Binder接口
+ * 系统服务Binder接口
+ * 提供系统级权限管理Binder接口
  */
-class ShizukuCompatBinder(private val context: Context) : Binder() {
+class ShizukuCompatBinder(private val context: Context) : IShizukuService.Stub() {
     companion object {
-        private const val TAG = "ShizukuCompatBinder"
-        const val TRANSACTION_getUid = 1
-        const val TRANSACTION_checkPermission = 2
-        const val TRANSACTION_getVersion = 3
-        const val TRANSACTION_getServerPatchVersion = 4
-        const val TRANSACTION_exit = 5
-        const val TRANSACTION_updateFlagsForUid = 6
-        const val TRANSACTION_getFlagsForUid = 7
+        private const val TAG = "XPermBinder"
+    }
+    
+    override fun getUid(): Int {
+        return android.os.Process.myUid()
+    }
+    
+    override fun checkPermission(permission: String?): Int {
+        return try {
+            if (permission == null) return PackageManager.PERMISSION_DENIED
+            
+            // 检查是否有root权限
+            val hasRoot = checkRootAccess()
+            if (hasRoot) PackageManager.PERMISSION_GRANTED else PackageManager.PERMISSION_DENIED
+        } catch (e: Exception) {
+            Log.e(TAG, "Error checking permission", e)
+            PackageManager.PERMISSION_DENIED
+        }
+    }
+    
+    override fun getVersion(): Int {
+        return 11 // API版本
+    }
+    
+    override fun getServerPatchVersion(): Int {
+        return 0
+    }
+    
+    override fun exit() {
+        // 服务由系统控制，不能直接退出
+        Log.d(TAG, "Request to exit system service (ignored)")
+    }
+    
+    override fun updateFlagsForUid(uid: Int, mask: Int, value: Int) {
+        Log.d(TAG, "Updating flags for UID $uid, mask: $mask, value: $value")
+    }
+    
+    override fun getFlagsForUid(uid: Int, mask: Int): Int {
+        Log.d(TAG, "Getting flags for UID $uid, mask: $mask")
+        return 0
+    }
+    
+    private fun checkRootAccess(): Boolean {
+        return try {
+            val process = Runtime.getRuntime().exec("su -c id")
+            val output = process.inputStream.bufferedReader().use { it.readText() }
+            process.waitFor()
+            output.contains("uid=0")
+        } catch (e: Exception) {
+            Log.e(TAG, "Root check failed", e)
+            false
+        }
     }
     
     override fun onTransact(code: Int, data: Parcel, reply: Parcel?, flags: Int): Boolean {
         return try {
-            when (code) {
-                TRANSACTION_getUid -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val result = ShizukuCompatUtils.getUid()
-                    reply?.writeNoException()
-                    reply?.writeInt(result)
-                    true
-                }
-                TRANSACTION_checkPermission -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val permission = data.readString()
-                    val result = if (permission != null) {
-                        ShizukuCompatUtils.checkRemotePermission(permission)
-                    } else {
-                        PackageManager.PERMISSION_DENIED
-                    }
-                    reply?.writeNoException()
-                    reply?.writeInt(result)
-                    true
-                }
-                TRANSACTION_getVersion -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val result = ShizukuCompatUtils.getVersion()
-                    reply?.writeNoException()
-                    reply?.writeInt(result)
-                    true
-                }
-                TRANSACTION_getServerPatchVersion -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val result = ShizukuCompatUtils.getServerPatchVersion()
-                    reply?.writeNoException()
-                    reply?.writeInt(result)
-                    true
-                }
-                TRANSACTION_exit -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    ShizukuCompatUtils.exit()
-                    reply?.writeNoException()
-                    true
-                }
-                TRANSACTION_updateFlagsForUid -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val uid = data.readInt()
-                    val mask = data.readInt()
-                    val value = data.readInt()
-                    ShizukuCompatUtils.updateFlagsForUid(uid, mask, value)
-                    reply?.writeNoException()
-                    true
-                }
-                TRANSACTION_getFlagsForUid -> {
-                    data.enforceInterface(ShizukuCompatUtils.BINDER_DESCRIPTOR)
-                    val uid = data.readInt()
-                    val mask = data.readInt()
-                    val result = ShizukuCompatUtils.getFlagsForUid(uid, mask)
-                    reply?.writeNoException()
-                    reply?.writeInt(result)
-                    true
-                }
-                else -> super.onTransact(code, data, reply, flags)
-            }
+            super.onTransact(code, data, reply, flags)
         } catch (e: Exception) {
             Log.e(TAG, "Error in onTransact", e)
             reply?.writeException(e)
