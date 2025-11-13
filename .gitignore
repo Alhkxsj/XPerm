@@ -1,5 +1,3 @@
-# 项目根目录
-/
 # 构建输出
 /build/
 # 应用构建输出
@@ -9,11 +7,8 @@
 # IDE
 .idea/
 *.iml
-*.ipr
-*.iws
 # 编辑器
 *.swp
-*.swo
 *~
 # 日志
 *.log
@@ -22,14 +17,7 @@ local.properties
 # Keystore
 *.jks
 *.keystore
-# 测试报告
-/test-report/
-# 系统文件
-.DS_Store
-Thumbs.db
-# 依赖缓存
-/.gradle/
 # APK 文件
-/app/**/*.apk
+*.apk
 # Proguard 输出
 /app/proguard/
