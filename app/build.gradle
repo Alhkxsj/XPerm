@@ -4,6 +4,7 @@ plugins {
 }
 
 android {
+    namespace 'com.xperm.service'
     compileSdk 34
 
     defaultConfig {
